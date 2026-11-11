@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>TripMate</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,600;12..96,800&display=swap">
+<style>
+:root{--bg:#f8f7f3;--surface:#fff;--ink:#2a362d;--mute:#697468;--line:#e3e1d7;--sun:#6f8f72;--sea:#4f7a56;--on-sun:#fff;--hero:#f8f7f3;--hero-ink:#2a362d;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#161c17;--surface:#1e261f;--ink:#e9eee8;--mute:#a1ada2;--line:#2f3a30;--sea:#9bc29f;--hero:#161c17;--hero-ink:#e9eee8}}
+:root[data-theme="dark"]{--bg:#161c17;--surface:#1e261f;--ink:#e9eee8;--mute:#a1ada2;--line:#2f3a30;--sea:#9bc29f;--hero:#161c17;--hero-ink:#e9eee8}
+*{box-sizing:border-box}html{scroll-behavior:smooth;scroll-padding-top:70px}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:"Bricolage Grotesque",system-ui,sans-serif;line-height:1.55}
+a{color:inherit}
+.wrap{max-width:1080px;margin:0 auto;padding:0 20px}
+header{position:sticky;top:0;z-index:20;background:var(--bg);border-bottom:1px solid var(--line)}
+nav{display:flex;align-items:center;gap:20px;height:60px}
+.logo{font-weight:800;font-size:22px;text-decoration:none;letter-spacing:-.5px}
+.logo i{font-style:normal;color:var(--sea);margin-left:1px}
+nav .links{display:flex;gap:18px;margin-left:auto;overflow-x:auto;white-space:nowrap}
+nav .links a{text-decoration:none;font-size:15px;color:var(--mute)}
+nav .links a:hover{color:var(--ink)}
+button,.btn{font:inherit;cursor:pointer;border:0;border-radius:8px;padding:10px 20px;font-weight:600;background:var(--sun);color:var(--on-sun);text-decoration:none;display:inline-block}
+button.ghost,.btn.ghost{background:transparent;color:inherit;border:1.5px solid currentColor}
+:focus-visible{outline:3px solid var(--sea);outline-offset:2px}
+.hero{background:var(--hero);color:var(--hero-ink);padding:64px 0 40px}
+.hero h1{font-size:clamp(34px,6vw,58px);line-height:1.1;letter-spacing:-1px;margin:0 0 16px;font-weight:600;max-width:16ch}
+.hero p{max-width:46ch;font-size:19px;opacity:.85}
+.hero .row{display:flex;gap:12px;flex-wrap:wrap;margin:26px 0 40px}
+.ticket{display:flex;flex-wrap:wrap;border:1px solid var(--line);background:var(--surface);border-radius:10px;max-width:560px}
+.ticket div{flex:1;padding:14px 18px;min-width:120px}
+.ticket div+div{border-left:1px solid var(--line)}
+.ticket b{font-size:24px;font-weight:600;display:block;color:var(--sea)}
+section{padding:64px 0}
+h2{font-size:clamp(28px,4.5vw,44px);line-height:1.08;letter-spacing:-.5px;margin:0 0 10px;font-weight:600}
+.sub{color:var(--mute);max-width:56ch;margin:0 0 30px}
+.grid{display:grid;gap:16px;grid-template-columns:repeat(auto-fit,minmax(220px,1fr))}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:20px}
+.card h3{margin:8px 0 6px;font-size:19px}.card p{margin:0;color:var(--mute);font-size:15px}
+.ico{font-size:28px}
+.dest{padding:0;overflow:hidden;cursor:pointer;text-align:left;color:var(--ink);font-weight:400;border-radius:16px;background:var(--surface);border:1px solid var(--line)}
+.dest .art{height:150px;display:flex;align-items:flex-end;padding:14px;font-size:34px}
+.dest .t{padding:16px 20px 20px}.dest h3{margin:0;font-size:22px}.dest span{color:var(--mute);font-size:14px}
+.panel{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:24px;display:grid;gap:18px}
+.two{display:grid;gap:22px;grid-template-columns:repeat(auto-fit,minmax(300px,1fr))}
+label.f{display:grid;gap:6px;font-weight:600;font-size:14px}
+input,select{font:inherit;padding:11px 13px;border-radius:10px;border:1.5px solid var(--line);background:var(--bg);color:var(--ink);width:100%}
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chips label{cursor:pointer}
+.chips input{position:absolute;opacity:0;width:1px;height:1px}
+.chips span{display:inline-block;padding:8px 15px;border:1.5px solid var(--line);border-radius:999px;font-size:14px;background:var(--bg)}
+.chips input:checked+span{background:var(--sea);color:var(--on-sun);border-color:var(--sea)}
+.chips input:focus-visible+span{outline:3px solid var(--sea)}
+.legend{font-weight:600;font-size:14px;margin-bottom:6px}
+.result{border:1px solid var(--line);background:var(--bg);border-radius:10px;padding:20px;display:none}
+.result.on{display:block}
+.score{font-size:56px;font-weight:800;color:var(--sea);line-height:1}
+.day{padding:14px 0;border-top:1px solid var(--line)}.day:first-of-type{border-top:0}.day a{font-size:14px;color:var(--sea);display:inline-block;margin-top:8px}.tl{list-style:none;padding:0;margin:10px 0 0;display:grid;gap:6px}.tl li{display:grid;grid-template-columns:84px 1fr;gap:10px;font-size:15px}.tl li b{color:var(--sea)}.cab{background:var(--bg);border:1px solid var(--line);border-radius:8px;padding:9px 12px;font-size:14px;margin-top:8px}.cmp{border-collapse:collapse;width:100%;min-width:520px;font-size:15px}.cmp th,.cmp td{text-align:left;padding:9px 10px;border-top:1px solid var(--line)}
+.chat{border:1px solid var(--line);border-radius:16px;background:var(--surface);overflow:hidden;display:none;margin-top:18px}
+.chat.on{display:block}
+.chat header{position:static;display:flex;justify-content:space-between;align-items:center;padding:12px 16px;background:var(--hero);color:var(--hero-ink);border:0}
+.msgs{height:200px;overflow:auto;padding:14px;display:grid;gap:8px;align-content:start}
+.msgs p{margin:0;padding:8px 12px;border-radius:12px;background:var(--bg);max-width:80%;font-size:15px}
+.msgs p.me{background:var(--sun);color:var(--on-sun);justify-self:end}
+.send{display:flex;gap:8px;padding:12px;border-top:1px solid var(--line)}
+.why{counter-reset:n}
+.picks .tag{font-size:12px;font-weight:600;color:var(--sea)}
+.cta{background:var(--surface);border:1px solid var(--line);color:var(--ink);border-radius:12px;padding:44px 28px;text-align:center}
+.cta button{background:var(--sun);color:var(--on-sun)}
+footer{padding:30px 0;color:var(--mute);font-size:14px;border-top:1px solid var(--line)}
+dialog{border:0;border-radius:20px;padding:28px;width:min(400px,92vw);background:var(--surface);color:var(--ink)}
+dialog::backdrop{background:rgba(7,20,35,.6)}
+dialog form{display:grid;gap:12px}
+.toast{position:fixed;left:50%;bottom:calc(20px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:var(--ink);color:var(--bg);padding:12px 20px;border-radius:999px;display:none;z-index:50}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+@media (max-width:640px){nav .links{display:none}}
+</style>
+</head>
+<body>
+<header><div class="wrap"><nav>
+<a class="logo" href="#home">Trip<i>Mate</i></a>
+<div class="links"><a href="#home">Home</a><a href="#services">Services</a><a href="#destinations">Destinations</a><a href="#planner">Plan a trip</a><a href="#groupmatch">GroupMatch</a><a href="#vote">Compare &amp; vote</a><a href="#contact">Contact</a></div>
+<button id="signBtn" class="ghost">Sign up</button>
+</nav></div></header>
+
+<main id="home">
+<div class="hero"><div class="wrap">
+<h1>Your trip, sorted by TripMate.</h1>
+<p>Plan together. Travel better. Collect everyone’s preferences, compare places, vote, and get a full day-by-day plan with cabs and routes.</p><p style="font-size:15px;opacity:.75">More than 6 in 10 Indian trip planners spend over 10 hours planning a single trip. TripMate cuts that down.</p>
+<div class="row"><a class="btn" href="#planner">Start planning</a><a class="btn ghost" href="#destinations">Explore destinations</a></div>
+<div class="ticket"><div><b>50+</b>Destinations</div><div><b>500+</b>Trips planned</div><div><b>4.9/5</b>Traveler rating</div></div>
+</div></div>
+
+<section id="services"><div class="wrap">
+<h2>Everything between “where?” and “booked”.</h2>
+<p class="sub">TripMate turns a rough idea into a plan you can follow.</p>
+<div class="grid">
+<div class="card"><div class="ico">🗺️</div><h3>Custom itineraries</h3><p>Day-by-day plans built around what you like.</p><p><a href="#planner">Build one</a></p></div>
+<div class="card"><div class="ico">💰</div><h3>Budget planning</h3><p>Pick a budget and get a plan that fits it.</p><p><a href="#planner">Set a budget</a></p></div>
+<div class="card"><div class="ico">🏨</div><h3>Stay and transport</h3><p>Hotels and ways to get there, matched to your comfort level.</p><p><a href="#travel">Find options</a></p></div>
+<div class="card"><div class="ico">🌍</div><h3>Destination guidance</h3><p>Places that suit your travel style.</p><p><a href="#destinations">Browse places</a></p></div>
+</div></div></section>
+
+<section id="destinations" style="padding-top:0"><div class="wrap">
+<h2>Places worth the ticket.</h2>
+<p class="sub">Tap a destination to start planning it.</p>
+<div class="grid">
+<button class="dest" data-d="Goa"><div class="art" style="background:#f0ebdf">🏖️</div><div class="t"><h3>Goa</h3><span>Beaches, adventure, nightlife</span></div></button>
+<button class="dest" data-d="Manali"><div class="art" style="background:#e8eeeb">🏔️</div><div class="t"><h3>Manali</h3><span>Mountains, snow, adventure</span></div></button>
+<button class="dest" data-d="Rajasthan"><div class="art" style="background:#efe9d8">🏛️</div><div class="t"><h3>Rajasthan</h3><span>Culture, heritage, history</span></div></button>
+</div></div></section>
+
+<section id="planner" style="padding-top:0"><div class="wrap">
+<h2>Tell us the trip. We’ll build it.</h2>
+<p class="sub">Personalized, budget-aware, and scored on how well it fits you.</p>
+<div class="panel">
+<div class="two">
+<label class="f">Where do you want to go?<input id="pDest" placeholder="Goa, Manali, Rajasthan…" list="dl"></label>
+<label class="f">Starting from<input id="pFrom" placeholder="Your city"></label>
+<label class="f">Number of days<input id="pDays" type="number" min="1" max="14" value="3"></label>
+<label class="f">Number of travelers<input id="pPeople" type="number" min="1" max="20" value="2"></label>
+</div>
+<datalist id="dl"><option>Goa</option><option>Manali</option><option>Rajasthan</option></datalist>
+<div><div class="legend">Budget</div><div class="chips" id="pBudget">
+<label><input type="radio" name="b" value="Low"><span>💳 Low · budget friendly</span></label>
+<label><input type="radio" name="b" value="Medium" checked><span>⚖️ Medium · balanced</span></label>
+<label><input type="radio" name="b" value="High"><span>💎 High · premium</span></label></div></div>
+<div><div class="legend">Interests</div><div class="chips" id="pInt">
+<label><input type="checkbox" value="Beaches"><span>🏖️ Beaches</span></label>
+<label><input type="checkbox" value="Adventure"><span>🏄 Adventure</span></label>
+<label><input type="checkbox" value="Food"><span>🍜 Food</span></label>
+<label><input type="checkbox" value="Nature"><span>🌿 Nature</span></label>
+<label><input type="checkbox" value="Culture"><span>🏛️ Culture</span></label>
+<label><input type="checkbox" value="Shopping"><span>🛍️ Shopping</span></label></div></div>
+<div><div class="legend">Travel style</div><div class="chips" id="pStyle">
+<label><input type="radio" name="s" value="Relaxed"><span>🧘 Relaxed</span></label>
+<label><input type="radio" name="s" value="Balanced" checked><span>⚖️ Balanced</span></label>
+<label><input type="radio" name="s" value="Packed"><span>⚡ Packed</span></label></div></div>
+<div><button id="build">Build my trip</button></div>
+<div class="result" id="pRes" aria-live="polite"></div>
+</div></div></section>
+
+<section id="travel" style="padding-top:0"><div class="wrap">
+<h2>Get there. Stay well.</h2>
+<p class="sub">Choose how you travel and how comfortable you want to be.</p>
+<div class="two">
+<div class="panel"><div class="legend">How would you like to travel?</div><div class="chips" id="tMode">
+<label><input type="radio" name="t" value="Flight" checked><span>✈️ Flight · fastest</span></label>
+<label><input type="radio" name="t" value="Train"><span>🚆 Train · comfortable</span></label>
+<label><input type="radio" name="t" value="Bus"><span>🚌 Bus · budget friendly</span></label></div></div>
+<div class="panel"><div class="legend">Where would you like to stay?</div><div class="chips" id="tStay">
+<label><input type="radio" name="st" value="Budget"><span>Budget · affordable</span></label>
+<label><input type="radio" name="st" value="Standard" checked><span>Standard · comfortable</span></label>
+<label><input type="radio" name="st" value="Premium"><span>Premium · luxury</span></label></div></div>
+</div>
+<p><button id="tBtn">Find travel and stay options</button></p>
+<div class="result" id="tRes" aria-live="polite"></div>
+</div></section>
+
+<section id="groupmatch" style="padding-top:0"><div class="wrap">
+<h2>Better trips start with the right people.</h2>
+<p class="sub">Compare preferences and see how well your group fits together.</p>
+<div class="two">
+<div class="panel">
+<label class="f">Group name<input id="gName" placeholder="Weekend Wanderers"></label>
+<label class="f">Budget per person<select id="gBud"><option>Low</option><option selected>Medium</option><option>High</option></select></label>
+<label class="f">Travel style<select id="gSty"><option>Relaxed</option><option selected>Balanced</option><option>Packed</option></select></label>
+<label class="f">Main interest<select id="gInt"><option>Beaches</option><option>Adventure</option><option>Nature</option><option>Food</option><option>Culture</option><option>Shopping</option></select></label>
+<label class="f">Number of travelers<input id="gNum" type="number" min="2" max="30" value="4"></label>
+<div><button id="gBtn">Calculate group match</button></div>
+</div>
+<div class="panel" style="align-content:center;text-align:center"><div class="ico">🤝</div><div class="legend">Your group match score</div><div class="score" id="gScore">--/100</div><p class="sub" id="gMsg" style="margin:0 auto">Enter your group’s preferences to see a sample score.</p></div>
+</div></div></section>
+
+<section id="vote" style="padding-top:0"><div class="wrap">
+<h2>Compare, vote, decide.</h2>
+<p class="sub">Collect everyone’s preferences, compare destinations side by side, and let the group vote.</p>
+<div class="panel" style="margin-bottom:16px"><div class="legend">1. Add each member’s preferences</div>
+<div class="two"><label class="f">Name<input id="mName"></label><label class="f">Budget<select id="mBud"><option>Low</option><option selected>Medium</option><option>High</option></select></label><label class="f">Main interest<select id="mInt"><option>Beaches</option><option>Adventure</option><option>Nature</option><option>Food</option><option>Culture</option><option>Shopping</option></select></label><label class="f">Available from<input id="mDate" type="date"></label></div>
+<div style="display:flex;gap:10px;flex-wrap:wrap"><button id="mAdd">Add member</button><button class="ghost" id="mRec">Recommend a destination</button></div>
+<div id="mList"><p class="sub" style="margin:8px 0 0">No members yet.</p></div><div class="result" id="mRes" aria-live="polite"></div></div>
+<div class="panel" style="overflow-x:auto;margin-bottom:16px"><div class="legend">2. Compare destinations</div>
+<table class="cmp"><tr><th></th><th>Goa</th><th>Manali</th><th>Rajasthan</th></tr>
+<tr><td>Best for</td><td>Beaches, food, nightlife</td><td>Snow, adventure, nature</td><td>Culture, heritage, shopping</td></tr>
+<tr><td>Best season</td><td>Oct to Feb</td><td>Mar to Jun, Dec to Feb</td><td>Oct to Mar</td></tr>
+<tr><td>Budget per person per day</td><td>₹1,800 to 9,000</td><td>₹1,800 to 8,000</td><td>₹2,000 to 10,000</td></tr>
+<tr><td>Ideal trip length</td><td>3 to 5 days</td><td>4 to 6 days</td><td>5 to 7 days</td></tr></table>
+<p class="sub" style="margin:0">Sample ranges for planning, not live prices.</p></div>
+<div class="panel"><div class="legend">3. Vote for the destination</div><div id="votes"></div><p class="sub" style="margin:0">Votes live in this browser session only.</p></div>
+</div></section>
+
+<section id="community" style="padding-top:0"><div class="wrap">
+<h2>Find your travel group.</h2>
+<p class="sub">Search a destination to find chats with people heading there.</p>
+<div class="send" style="padding:0;border:0"><input id="cSearch" placeholder="Search a destination" aria-label="Search destination"><button id="cBtn">Search</button></div>
+<div class="grid" id="cList" style="margin-top:16px"><p class="sub">Search a destination to discover travel groups.</p></div>
+<div class="chat" id="chat"><header><div><b id="cTitle">Group chat</b><br><small>Discuss your trip plans</small></div><button class="ghost" id="cClose" aria-label="Close chat">✕</button></header>
+<div class="msgs" id="msgs"><p>Welcome! Start discussing your trip here.</p></div>
+<div class="send"><input id="cMsg" placeholder="Type a message" aria-label="Message"><button id="cSend">Send</button></div></div>
+</div></section>
+
+<section style="padding-top:0"><div class="wrap">
+<h2>Less planning. More going.</h2><p class="sub">Four reasons people plan with TripMate.</p>
+<div class="grid">
+<div class="card"><h3>Personalized</h3><p>Built around your preferences.</p></div>
+<div class="card"><h3>Budget friendly</h3><p>See costs before you commit.</p></div>
+<div class="card"><h3>Time saving</h3><p>Less research, more trip.</p></div>
+<div class="card"><h3>Simple</h3><p>Everything for your trip in one place.</p></div>
+</div></div></section>
+
+<section class="picks" style="padding-top:0"><div class="wrap">
+<h2>TripMate picks.</h2><p class="sub">Stays and travel services we suggest based on destination, budget and style.</p>
+<div class="grid">
+<div class="card"><div class="ico">🏨</div><span class="tag">Hotel</span><h3>Savage Hotel</h3><p>Comfortable, well placed and good value. Comfort · Good value</p></div>
+<div class="card"><div class="ico">🚌</div><span class="tag">Travel service</span><h3>Swing Travels</h3><p>Convenient transport during your trip. Transport · Convenient</p></div>
+<div class="card"><div class="ico">🏨</div><span class="tag">Hotel</span><h3>TripMate Stay Pick</h3><p>A stay chosen to match your preferences. Recommended · Traveler friendly</p></div>
+</div></div></section>
+
+<section id="contact" style="padding-top:0"><div class="wrap"><div class="cta">
+<h2>Ready when you are.</h2><p>Tell us where you want to go. We’ll work out the rest.</p>
+<a href="#planner"><button>Plan my trip</button></a></div></div></section>
+</main>
+<footer><div class="wrap">TripMate · Travel smarter. © 2026 · Made for better journeys.</div></footer>
+
+<dialog id="dlg"><form method="dialog" id="signForm"><h2 style="font-size:26px">Create an account</h2><p class="sub" style="margin:0">It’s quick and easy.</p>
+<label class="f">Name<input id="sName" required></label><label class="f">Email<input id="sEmail" type="email" required></label><label class="f">Password<input id="sPw" type="password" minlength="6" required></label>
+<button type="submit">Sign up</button><button type="button" class="ghost" id="sCancel">Cancel</button></form></dialog>
+<div class="toast" id="toast" role="status"></div>
+
+<script>
+const $=s=>document.querySelector(s);
+const val=n=>(document.querySelector('input[name="'+n+'"]:checked')||{}).value;
+function toast(m){const t=$('#toast');t.textContent=m;t.style.display='block';clearTimeout(toast.x);toast.x=setTimeout(()=>t.style.display='none',2600)}
+const dlg=$('#dlg');
+$('#signBtn').onclick=()=>dlg.showModal();$('#sCancel').onclick=()=>dlg.close();
+$('#signForm').onsubmit=()=>{toast('Welcome to TripMate, '+$('#sName').value+'!')};
+document.querySelectorAll('.dest').forEach(b=>b.onclick=()=>{$('#pDest').value=b.dataset.d;$('#planner').scrollIntoView()});
+
+const PLACES={
+ goa:['Baga and Calangute beaches','Old Goa churches and Fontainhas','Water sports at Candolim','Dudhsagar Falls day trip','Sunset at Chapora Fort','Seafood at a beach shack','Anjuna flea market'],
+ manali:['Old Manali cafés','Solang Valley snow and ropeway','Hadimba Temple and cedar forest','Rohtang Pass excursion','Beas River rafting','Jogini Falls trek','Mall Road shopping'],
+ rajasthan:['Amber Fort, Jaipur','City Palace and Hawa Mahal','Jaisalmer fort and desert camp','Lake Pichola, Udaipur','Mehrangarh Fort, Jodhpur','Local thali and street food','Bazaar shopping for textiles']
+};
+const COST={Low:1800,Medium:4200,High:9000};
+const MAP={Beaches:['goa'],Adventure:['goa','manali'],Nature:['manali'],Culture:['rajasthan'],Food:['goa','rajasthan'],Shopping:['rajasthan','goa']};
+const DRV=['Ramesh K.','Suresh P.','Imran S.','Venkat R.','Anil M.'];
+const FOOD={goa:'Goan fish thali',manali:'Himachali siddu and trout',rajasthan:'dal baati churma'};
+function cabFor(p){const x=p<=3?['Hatchback (Swift / WagonR)',3]:p<=4?['Sedan (Dzire / Etios)',4]:p<=6?['SUV (Ertiga / Innova)',6]:['Tempo Traveller (12-seater)',12];return{t:x[0],n:Math.ceil(p/x[1])}}
+function plan(o){
+ const {dest,days,ppl,bud,sty,list,from}=o;
+ const per={Relaxed:2,Balanced:3,Packed:4}[sty],mode=val('t')||'Flight';
+ const hub={Flight:'airport',Train:'railway station',Bus:'bus stand'}[mode];
+ const cab=cabFor(ppl),rate={Low:11,Medium:14,High:22}[bud];
+ const stay=ST[{Low:'Budget',Medium:'Standard',High:'Premium'}[bud]];
+ const food=FOOD[dest.toLowerCase()]||'a local specialty';
+ let html='',cabTotal=0;
+ for(let d=0;d<days;d++){
+  const first=d===0,last=d===days-1,one=first&&last;
+  const times=one?['11:00 AM','4:00 PM']:first?['4:30 PM']:last?['9:30 AM']:{2:['10:00 AM','4:00 PM'],3:['9:30 AM','2:30 PM','5:30 PM'],4:['9:00 AM','11:30 AM','3:00 PM','6:00 PM']}[per];
+  const r=[],acts=[];let km=first||last?20:0;
+  times.forEach((t,k)=>{const leg=6+((d*7+k*5)%18);km+=leg;acts.push([t,list[(d*per+k)%list.length],leg])});
+  if(first){r.push([one?'8:00 AM':'12:00 PM','Arrive by '+mode.toLowerCase()+' from '+(from||'your city')+'. Cab pickup at the '+hub+'.']);
+   if(one)r.push(['9:00 AM','Drop luggage at '+stay[0]+'.']);else r.push(['1:00 PM','Lunch: '+food+'.'],['2:00 PM','Check in at '+stay[0]+' ('+stay[1]+').'])}
+  else r.push(['8:00 AM','Breakfast at the hotel.']);
+  acts.forEach((a,k)=>{r.push([a[0],a[1]+' <small>🚕 '+a[2]+' km · about '+Math.round(a[2]*2.6)+' min</small>']);
+   if(((!first&&!last)||one)&&k===(per===4&&!one?1:0))r.push(['1:00 PM','Lunch: '+food+'.'])});
+  if(last){if(one)r.push(['6:30 PM','Cab to the '+hub+'. Depart by '+mode.toLowerCase()+'.']);else r.push(['12:00 PM','Check out.'],['1:00 PM','Cab to the '+hub+'. Depart by '+mode.toLowerCase()+'.'])}
+  else r.push(['8:00 PM','Dinner, then back to the hotel.']);
+  const fare=Math.max(km*rate,700)*cab.n;cabTotal+=fare;
+  const stops=acts.map(a=>a[1]+', '+dest);
+  const url='https://www.google.com/maps/dir/?api=1&origin='+encodeURIComponent(stops[0])+'&destination='+encodeURIComponent(stops[stops.length-1])+(stops.length>2?'&waypoints='+encodeURIComponent(stops.slice(1,-1).join('|')):'');
+  html+='<div class="day"><b>Day '+(d+1)+(one?'':first?' · Arrival':last?' · Departure':'')+'</b>'
+   +'<div class="cab">🚕 <b>'+cab.n+' × '+cab.t+'</b> · Driver '+DRV[d%5]+' (sample) · ₹'+rate+'/km · about '+km+' km · est. ₹'+fare.toLocaleString('en-IN')+'</div>'
+   +'<ul class="tl">'+r.map(x=>'<li><b>'+x[0]+'</b><span>'+x[1]+'</span></li>').join('')+'</ul>'
+   +'<a href="'+url+'" target="_blank" rel="noopener">Open day route in Google Maps</a></div>';
+ }
+ const rooms=Math.ceil(ppl/2),nights=Math.max(1,days-1),f=n=>'₹'+n.toLocaleString('en-IN');
+ const stayC={Low:1300,Medium:3750,High:10000}[bud]*rooms*nights,foodC={Low:500,Medium:1000,High:2200}[bud]*ppl*days,actC={Low:300,Medium:700,High:1800}[bud]*ppl*days,tkt={Flight:6000,Train:1800,Bus:900}[mode]*2*ppl;
+ const total=tkt+stayC+cabTotal+foodC+actC;
+ const sum='<div class="cab" style="margin:0 0 12px"><b>Budget breakdown</b> (sample estimates)<br>Tickets '+f(tkt)+' · Stay '+f(stayC)+' ('+rooms+' room'+(rooms>1?'s':'')+', '+nights+' night'+(nights>1?'s':'')+') · Local cabs '+f(cabTotal)+' · Food '+f(foodC)+' · Activities '+f(actC)+'<br><b>Total '+f(total)+'</b> · '+f(Math.round(total/ppl))+' per person</div>';
+ return{sum,days:html,total};
+}
+$('#build').onclick=()=>{
+ const dest=$('#pDest').value.trim();if(!dest){toast('Enter a destination first');return}
+ const days=Math.max(1,Math.min(14,+$('#pDays').value||1)),ppl=Math.max(1,+$('#pPeople').value||1);
+ const bud=val('b'),sty=val('s'),ints=[...document.querySelectorAll('#pInt input:checked')].map(i=>i.value);
+ const key=dest.toLowerCase(),list=PLACES[key]||['Local landmarks and old town','Top-rated local food spot','Nature walk or viewpoint','Local market','Signature experience nearby','Sunset spot','Day trip nearby'];
+ const per={Relaxed:1,Balanced:2,Packed:3}[sty];
+ let score=60+(PLACES[key]?10:0);
+ if(ints.length){const hit=ints.filter(i=>(MAP[i]||[]).includes(key)).length;score+=Math.round(25*hit/ints.length)}else score+=10;
+ score=Math.min(98,score+(bud==='Medium'?3:0));
+ const R=plan({dest,days,ppl,bud,sty,list,from:$('#pFrom').value.trim()});
+ let h='<div class="score">'+score+'/100</div><p class="sub" style="margin:4px 0 14px">Trip match score for '+dest+'</p>'+R.sum;
+ h+=R.days;
+ const r=$('#pRes');r.innerHTML=h;r.classList.add('on');r.scrollIntoView({block:'nearest'});
+};
+
+const TR={Flight:['Fastest option, book 3–4 weeks ahead','Typical fare ₹3,500–9,000'],Train:['Comfortable overnight and day services','Typical fare ₹600–3,200'],Bus:['Most affordable, many routes','Typical fare ₹400–1,500']};
+const ST={Budget:['Hostels and guesthouses','₹800–1,800 per night'],Standard:['3-star hotels and resorts','₹2,500–5,000 per night'],Premium:['Luxury hotels and villas','₹8,000+ per night']};
+$('#tBtn').onclick=()=>{const t=val('t'),s=val('st');
+ $('#tRes').innerHTML='<div class="two"><div><b>✈️ '+t+'</b><p>'+TR[t][0]+'.<br>'+TR[t][1]+'.</p></div><div><b>🏨 '+s+' stay</b><p>'+ST[s][0]+'.<br>'+ST[s][1]+'.</p></div></div><p class="sub" style="margin:0">Prices are sample ranges, not live quotes.</p>';
+ $('#tRes').classList.add('on')};
+
+$('#gBtn').onclick=()=>{
+ const n=+$('#gNum').value||0;if(n<2){toast('A group needs at least 2 travelers');return}
+ const b=$('#gBud').value,s=$('#gSty').value,i=$('#gInt').value,name=$('#gName').value||'Your group';
+ let sc=62;sc+=b==='Medium'?10:6;sc+=s==='Balanced'?10:5;sc+=['Beaches','Adventure','Food'].includes(i)?8:6;sc+=n<=6?8:n<=12?4:0;sc=Math.min(97,sc);
+ $('#gScore').textContent=sc+'/100';
+ $('#gMsg').textContent=name+': '+(sc>=85?'a strong match. You should travel well together.':sc>=75?'a good match. Agree on the daily pace early.':'room to grow. Talk through budget and pace before booking.')
+};
+
+const GROUPS={goa:['Goa Beach Crew','Goa on a Budget','Goa Food Trail'],manali:['Manali Snow Seekers','Manali Road Trip','Solang Adventure Club'],rajasthan:['Rajasthan Heritage Walk','Desert Camp Gang','Jaipur Weekenders']};
+$('#cBtn').onclick=()=>{const q=$('#cSearch').value.trim();if(!q)return;
+ const g=GROUPS[q.toLowerCase()]||[q+' Travelers',q+' Weekend Plans',q+' First-timers'];
+ $('#cList').innerHTML=g.map(x=>'<div class="card"><h3>'+x.replace(/</g,'&lt;')+'</h3><p>Active members planning trips</p><p style="margin-top:12px"><button data-g="'+x.replace(/"/g,'')+'">Join chat</button></p></div>').join('');
+ $('#cList').querySelectorAll('button').forEach(b=>b.onclick=()=>{$('#cTitle').textContent=b.dataset.g;$('#chat').classList.add('on');$('#msgs').innerHTML='<p>Welcome! Start discussing your trip here.</p>';$('#chat').scrollIntoView({block:'nearest'})})};
+$('#cClose').onclick=()=>$('#chat').classList.remove('on');
+function send(){const v=$('#cMsg').value.trim();if(!v)return;const p=document.createElement('p');p.className='me';p.textContent=v;$('#msgs').appendChild(p);$('#cMsg').value='';$('#msgs').scrollTop=1e5}
+$('#cSend').onclick=send;$('#cMsg').onkeydown=e=>{if(e.key==='Enter')send()};
+
+const MEM=[];
+function renderMem(){$('#mList').innerHTML=MEM.length?'<ul class="tl" style="margin-top:12px">'+MEM.map(m=>'<li><b>'+m.n.replace(/</g,'&lt;')+'</b><span>'+m.b+' budget · '+m.i+(m.d?' · free from '+m.d:'')+'</span></li>').join('')+'</ul>':'<p class="sub" style="margin:8px 0 0">No members yet.</p>'}
+$('#mAdd').onclick=()=>{const n=$('#mName').value.trim();if(!n){toast('Enter a name');return}MEM.push({n,b:$('#mBud').value,i:$('#mInt').value,d:$('#mDate').value});$('#mName').value='';renderMem()};
+$('#mRec').onclick=()=>{if(MEM.length<2){toast('Add at least 2 members');return}
+ const sc={goa:0,manali:0,rajasthan:0};MEM.forEach(m=>(MAP[m.i]||[]).forEach(k=>sc[k]++));
+ const best=Object.keys(sc).sort((a,b)=>sc[b]-sc[a])[0],B={Low:1,Medium:2,High:3},avg=MEM.reduce((a,m)=>a+B[m.b],0)/MEM.length,lvl=avg<1.67?'Low':avg<2.34?'Medium':'High';
+ const dates=MEM.map(m=>m.d).filter(Boolean).sort(),free=dates.length?dates[dates.length-1]:'',nm=best[0].toUpperCase()+best.slice(1);
+ const r=$('#mRes');r.innerHTML='<b>Best fit: '+nm+'.</b> It matches '+sc[best]+' of '+MEM.length+' members’ interests. Suggested shared budget: '+lvl+'.'+(free?' Everyone is free from '+free+'.':'')+'<p><button id="mPlan">Plan this trip</button></p>';r.classList.add('on');
+ $('#mPlan').onclick=()=>{$('#pDest').value=nm;$('#pPeople').value=MEM.length;document.querySelector('input[name="b"][value="'+lvl+'"]').checked=true;$('#planner').scrollIntoView()}};
+const VOTES={Goa:0,Manali:0,Rajasthan:0};let myVote=null;
+function renderVotes(){const tot=Object.values(VOTES).reduce((a,b)=>a+b,0);
+ $('#votes').innerHTML=Object.keys(VOTES).map(k=>'<div style="display:grid;grid-template-columns:90px 1fr auto;gap:10px;align-items:center;margin:8px 0"><b>'+k+'</b><div style="background:var(--bg);border-radius:6px;height:12px;overflow:hidden"><div style="height:100%;width:'+(tot?VOTES[k]/tot*100:0)+'%;background:var(--sea)"></div></div><button '+(myVote===k?'':'class="ghost" ')+'data-v="'+k+'">'+(myVote===k?'Voted · ':'Vote · ')+VOTES[k]+'</button></div>').join('');
+ $('#votes').querySelectorAll('button').forEach(b=>b.onclick=()=>{if(myVote)VOTES[myVote]--;myVote=b.dataset.v;VOTES[myVote]++;renderVotes()})}
+renderVotes();
+</script>
+</body>
+</html>
